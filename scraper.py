@@ -10,7 +10,6 @@ load_dotenv()
 
 url_supabase: str = os.environ.get("SUPABASE_URL")
 key_supabase: str = os.environ.get("SUPABASE_KEY")
-key_scraperapi: str = os.environ.get("SCRAPERAPI_KEY")
 supabase: Client = create_client(url_supabase, key_supabase)
 
 
@@ -38,16 +37,7 @@ def rastrear_precos():
         url = f'https://lista.mercadolivre.com.br/{termo_url}'
 
         print(f"🌐 Raspando: \033[36m{termo_busca}\033[m")
-        # Configuramos o payload para o ScraperAPI
-        payload = {
-            'api_key': key_scraperapi,
-            'url': url,
-            'country_code': 'br',
-            'premium': 'true'  # Usar IPs premium para evitar bloqueios
-        }
-
-        # Agora nós mandamos a requisição para o ScraperAPI, passando a URL do ML como parâmetro!
-        r = requests.get('https://api.scraperapi.com/', params=payload)
+        r = requests.get(url, headers=headers)
 
         if r.status_code != 200:
             print(
@@ -64,7 +54,6 @@ def rastrear_precos():
         produtos_validos = []
         termo_busca_lower = termo_busca.lower()
 
-        # Divide o termo de busca em palavras (Ex: ['iphone', '16'])
         palavras_busca = termo_busca_lower.split()
 
         for i, caixa in enumerate(caixas_produtos[:15], start=1):
@@ -87,7 +76,7 @@ def rastrear_precos():
             r'(\d+)\s*(gb|tb)\b', r'\1\2', termo_busca_lower)
         palavras_busca = termo_busca_norm.split()
 
-        for i, caixa in enumerate(caixas_produtos[:25], start=1):
+        for i, caixa in enumerate(caixas_produtos[:15], start=1):
             link_tag = caixa.find('a', class_='poly-component__title')
             preco_tag = caixa.find(
                 'span', class_='andes-money-amount__fraction')
