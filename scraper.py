@@ -35,7 +35,7 @@ def rastrear_precos():
         termo_busca = produto['termo_busca']
 
         termo_url = termo_busca.replace(' ', '-').lower()
-        url = f'https://lista.mercadolivre.com.br/novo/{termo_url}'
+        url = f'https://lista.mercadolivre.com.br/{termo_url}'
 
         print(f"🌐 Raspando: \033[36m{termo_busca}\033[m")
         # Configuramos o payload para o ScraperAPI
