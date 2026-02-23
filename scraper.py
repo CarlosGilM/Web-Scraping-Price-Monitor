@@ -1,7 +1,7 @@
 import os
 import time
 import requests
-import re  # <--- NOVO IMPORT PARA A BUSCA LITERAL
+import re
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -18,7 +18,7 @@ def rastrear_precos():
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
     }
 
-    print("🔍 Buscando lista de produtos no banco de dados...")
+    print("Buscando lista de produtos no banco de dados...")
     resposta_produtos = supabase.table("produtos").select("*").execute()
     lista_produtos = resposta_produtos.data
 
@@ -26,7 +26,7 @@ def rastrear_precos():
         print("Nenhum produto cadastrado no banco para monitorar.")
         return
 
-    print(f"📦 Encontrei {len(lista_produtos)} produto(s) para monitorar!\n")
+    print(f"Encontrei {len(lista_produtos)} produto(s) para monitorar!\n")
     print("=" * 60)
 
     for produto in lista_produtos:
@@ -69,7 +69,6 @@ def rastrear_precos():
 
         # ==========================================
         # NORMALIZAÇÃO DO TERMO DE BUSCA
-        # Transforma '128 gb' em '128gb' para não dar erro na comparação
         # ==========================================
         termo_busca_lower = termo_busca.lower()
         termo_busca_norm = re.sub(
@@ -87,7 +86,6 @@ def rastrear_precos():
                 preco_texto = preco_tag.get_text().strip()
                 link = link_tag.get('href')
 
-                # Normaliza o título do anúncio também (tira o espaço do GB/TB)
                 descricao_norm = re.sub(
                     r'(\d+)\s*(gb|tb)\b', r'\1\2', descricao_lower)
 
@@ -112,7 +110,6 @@ def rastrear_precos():
                 palavras_proibidas = ['recondicionado',
                                       'usado', 'vitrine', 'troca']
 
-                # Verifica se a palavra proibida está no título como palavra inteira (evita que 'pro' bloqueie a palavra 'produto')
                 tem_palavra_proibida = any(
                     re.search(rf'\b{p}\b', descricao_lower) for p in palavras_proibidas)
 
@@ -121,9 +118,6 @@ def rastrear_precos():
                         f"\033[90m[{i}] 🚫 Ignorado (Proibido): {descricao}\033[m")
                     continue
 
-                # ==========================================
-                # EXTRAÇÃO DO PREÇO
-                # ==========================================
                 try:
                     preco_num = float(preco_texto.replace('.', ''))
 
@@ -143,7 +137,7 @@ def rastrear_precos():
                 produtos_validos, key=lambda x: x['preco'])
             top_3 = produtos_validos[:3]
 
-            print(f"🏆 Top {len(top_3)} mais baratos validados:")
+            print(f"Top {len(top_3)} mais baratos:")
 
             dados_insercao = []
             for index, p in enumerate(top_3, start=1):
@@ -160,11 +154,11 @@ def rastrear_precos():
                 dados_insercao).execute()
             print("✅ Salvos no histórico!\n")
         else:
-            print("⚠️ Nenhum produto válido passou pelos filtros.\n")
+            print("Nenhum produto válido passou pelos filtros.\n")
 
         time.sleep(2)
 
-    print("🏁 Varredura completa para todos os produtos!")
+    print("Varredura completa para todos os produtos!")
 
 
 if __name__ == "__main__":
