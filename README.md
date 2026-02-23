@@ -48,7 +48,7 @@ Este projeto é um rastreador de preços automatizado que realiza web scraping n
 
 Para iniciar o rastreamento, execute o comando:
 ```bash
-python main.py
+python scraper.py
  ```
 
 O script percorrerá cada item da sua tabela de produtos, aplicará os filtros de limpeza e atualizará seu histórico no banco de dados.
