@@ -28,8 +28,8 @@ Este projeto é um rastreador de preços automatizado que realiza web scraping n
 
 1.  Clone o repositório:
     ```bash
-    git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
-    cd seu-repositorio
+    git clone https://github.com/CarlosGilM/Web-Scraping-Price-Monitor.git
+    cd Web-Scraping-Price-Monitor
     ```
 
 2.  Instale as dependências:
@@ -40,7 +40,7 @@ Este projeto é um rastreador de preços automatizado que realiza web scraping n
 3.  Configure o arquivo `.env`:
     Crie um arquivo `.env` na raiz do projeto e adicione suas credenciais:
     ```env
-    SUPABASE_URL=[https://seu-projeto.supabase.co](https://seu-projeto.supabase.co)
+    SUPABASE_URL=https://seu-projeto.supabase.co
     SUPABASE_KEY=sua-chave-anon-publica
     ```
 
