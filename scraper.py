@@ -10,6 +10,7 @@ load_dotenv()
 
 url_supabase: str = os.environ.get("SUPABASE_URL")
 key_supabase: str = os.environ.get("SUPABASE_KEY")
+key_scraperapi: str = os.environ.get("SCRAPERAPI_KEY")
 supabase: Client = create_client(url_supabase, key_supabase)
 
 
@@ -37,7 +38,16 @@ def rastrear_precos():
         url = f'https://lista.mercadolivre.com.br/novo/{termo_url}'
 
         print(f"🌐 Raspando: \033[36m{termo_busca}\033[m")
-        r = requests.get(url, headers=headers)
+        # Configuramos o payload para o ScraperAPI
+        payload = {
+            'api_key': key_scraperapi,
+            'url': url,
+            'country_code': 'br',
+            'premium': 'true'  # Usar IPs premium para evitar bloqueios
+        }
+
+        # Agora nós mandamos a requisição para o ScraperAPI, passando a URL do ML como parâmetro!
+        r = requests.get('https://api.scraperapi.com/', params=payload)
 
         if r.status_code != 200:
             print(
